@@ -2,7 +2,8 @@
 
 
 const int PAGE_SIZE = 64; // for AT24C256C
-const int EEPROM_SIZE = 32768; // for AT24C256C 32 Kb
+const int EEPROM_SIZE = 32768; // for AT24C256C  32,768 words of 8 bits each
+const int EEPROM_I2C_ADDR = 0x50;
 
 void initEEPROM(){
   Wire.setSDA(PB_7_ALT1); //pinSDA
@@ -10,12 +11,12 @@ void initEEPROM(){
   Wire.begin();
 }
 
-void clearEEPROM(byte fill, byte eeprom_i2c_addr ) {
+void clearEEPROM(byte fill) {
   byte buffer[PAGE_SIZE];
   for (int i = 0; i < PAGE_SIZE; i++) buffer[i] = fill;
 
   for (uint16_t addr = 0; addr < EEPROM_SIZE; addr += PAGE_SIZE) {
-    Wire.beginTransmission(eeprom_i2c_addr);
+    Wire.beginTransmission(EEPROM_I2C_ADDR);
     Wire.write((addr >> 8) & 0xFF);  // Older address byte
     Wire.write(addr & 0xFF);         // Less address byte
 
@@ -28,14 +29,14 @@ void clearEEPROM(byte fill, byte eeprom_i2c_addr ) {
   }
 }
 
-bool isDataInEEPROM(uint16_t addr, byte eeprom_i2c_addr ) { // func for 4-byte size data
+bool isDataInEEPROM(uint16_t addr ) { // func for 4-byte size data
   // If all 4 bytes are equal 0xFF — empty
-  Wire.beginTransmission(eeprom_i2c_addr);
+  Wire.beginTransmission(EEPROM_I2C_ADDR);
   Wire.write((addr >> 8) & 0xFF);
   Wire.write(addr & 0xFF);
   Wire.endTransmission();
 
-  Wire.requestFrom(eeprom_i2c_addr, 4);
+  Wire.requestFrom(EEPROM_I2C_ADDR, 4);
   for (int i = 0; i < 4; i++) {
     while (!Wire.available());
     if (Wire.read() != 0xFF) return true;  
@@ -43,10 +44,10 @@ bool isDataInEEPROM(uint16_t addr, byte eeprom_i2c_addr ) { // func for 4-byte s
   return false;  
 }
 
-void writeFloatToEEPROM(uint16_t addr, float value, byte eeprom_i2c_addr) {
+void writeFloatToEEPROM(uint16_t addr, float value) {
   byte* p = (byte*) &value;  
 
-  Wire.beginTransmission(eeprom_i2c_addr);
+  Wire.beginTransmission(EEPROM_I2C_ADDR);
   Wire.write((addr >> 8) & 0xFF);  // Старший байт адреса
   Wire.write(addr & 0xFF);         // Младший байт адреса
 
@@ -58,15 +59,15 @@ void writeFloatToEEPROM(uint16_t addr, float value, byte eeprom_i2c_addr) {
   delay(5);
 }
 
-float readFloatFromEEPROM(uint16_t addr, byte eeprom_i2c_addr) {
+float readFloatFromEEPROM(uint16_t addr) {
   byte buffer[4];
 
-  Wire.beginTransmission(eeprom_i2c_addr);
+  Wire.beginTransmission(EEPROM_I2C_ADDR);
   Wire.write((addr >> 8) & 0xFF);
   Wire.write(addr & 0xFF);
   Wire.endTransmission();
 
-  Wire.requestFrom(eeprom_i2c_addr, 4);
+  Wire.requestFrom(EEPROM_I2C_ADDR, 4);
   for (int i = 0; i < 4; i++) {
     while (!Wire.available());
     buffer[i] = Wire.read();

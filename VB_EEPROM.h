@@ -7,14 +7,13 @@
 
 extern const int PAGE_SIZE;
 extern const int EEPROM_SIZE;
-
-
+extern const int EEPROM_I2C_ADDR;
 
 
 void initEEPROM();     // Объявление
-void clearEEPROM(byte fill = 0xFF, byte eeprom_i2c_addr = 0x50);
-bool isDataInEEPROM(uint16_t addr, byte eeprom_i2c_addr = 0x50);
-void writeFloatToEEPROM(uint16_t addr, float value, byte eeprom_i2c_addr = 0x50);
-float readFloatFromEEPROM(uint16_t addr, byte eeprom_i2c_addr = 0x50);
+void clearEEPROM(byte fill = 0xFF);
+bool isDataInEEPROM(uint16_t addr);
+void writeFloatToEEPROM(uint16_t addr, float value);
+float readFloatFromEEPROM(uint16_t addr);
 
 #endif
