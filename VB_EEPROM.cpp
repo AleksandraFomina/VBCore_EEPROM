@@ -5,9 +5,9 @@ const int PAGE_SIZE = 64; // for AT24C256C
 const int EEPROM_SIZE = 32768; // for AT24C256C  32,768 words of 8 bits each
 const int EEPROM_I2C_ADDR = 0x50;
 
-void initEEPROM(){
-  Wire.setSDA(PB_7_ALT1); //pinSDA
-  Wire.setSCL(PC6); //pinSCL
+void initEEPROM(uint32_t pin_SDA, uint32_t pin_SCL){
+  Wire.setSDA(pin_SDA); //pinSDA PB_7_ALT1
+  Wire.setSCL(pin_SCL); //pinSCL PC6
   Wire.begin();
 }
 

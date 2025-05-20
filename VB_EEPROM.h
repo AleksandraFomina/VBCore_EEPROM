@@ -10,7 +10,7 @@ extern const int EEPROM_SIZE;
 extern const int EEPROM_I2C_ADDR;
 
 
-void initEEPROM();     // Объявление
+void initEEPROM(uint32_t pin_SDA, uint32_t pin_SCL);     // Объявление
 void clearEEPROM(byte fill = 0xFF);
 bool isDataInEEPROM(uint16_t addr);
 void writeFloatToEEPROM(uint16_t addr, float value);
